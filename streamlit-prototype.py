@@ -172,6 +172,18 @@ def main():
     st.sidebar.markdown("---")
     st.sidebar.markdown("**Amazon Q AWS Programs Toolkit v1.0**")
     
+    # Debug/Reset section
+    with st.sidebar.expander("🔧 Debug Tools"):
+        if st.button("Reset All Sessions"):
+            for key in list(st.session_state.keys()):
+                del st.session_state[key]
+            st.success("All sessions reset!")
+            st.rerun()
+        
+        st.write("Current session state:")
+        for key, value in st.session_state.items():
+            st.write(f"- {key}: {value}")
+    
     with st.sidebar.expander("📋 About This Tool"):
         st.markdown("""
         **Purpose:** Transform AWS migration and optimization assessments with AI-powered insights
@@ -195,9 +207,6 @@ def main():
     # Check if page should be overridden by button clicks
     if 'page' in st.session_state:
         page = st.session_state.page
-        # Clear the session state after using it
-        if st.session_state.page != "🏠 Home":
-            del st.session_state.page
     
     if page == "🏠 Home":
         show_home_page()
@@ -321,9 +330,16 @@ def show_home_page():
 def show_map_assessment():
     st.subheader("📊 Migration Acceleration Program (MAP) Assessment")
     
+    # Initialize step if not exists
+    if 'map_step' not in st.session_state:
+        st.session_state.map_step = 0
+    
     # Progress indicator
     progress_steps = ["Project Setup", "Data Upload", "Validation", "Analysis", "Results"]
-    current_step = st.session_state.get('map_step', 0)
+    current_step = st.session_state.map_step
+    
+    # Debug info (remove in production)
+    st.sidebar.write(f"Debug: Current step = {current_step}")
     
     # Progress bar
     progress_cols = st.columns(len(progress_steps))
@@ -346,6 +362,10 @@ def show_map_assessment():
         show_analysis_progress()
     elif current_step == 4:
         show_assessment_results()
+    else:
+        # Reset if step is invalid
+        st.session_state.map_step = 0
+        st.rerun()
 
 def show_project_setup():
     st.subheader("Step 1: Project Setup")
