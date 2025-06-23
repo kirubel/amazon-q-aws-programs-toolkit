@@ -192,6 +192,13 @@ def main():
         ["🏠 Home", "📊 MAP Assessment", "💰 OLA Analysis", "🖥️ ONE OLA (Windows & Storage)", "📈 Results Dashboard"]
     )
     
+    # Check if page should be overridden by button clicks
+    if 'page' in st.session_state:
+        page = st.session_state.page
+        # Clear the session state after using it
+        if st.session_state.page != "🏠 Home":
+            del st.session_state.page
+    
     if page == "🏠 Home":
         show_home_page()
     elif page == "📊 MAP Assessment":
